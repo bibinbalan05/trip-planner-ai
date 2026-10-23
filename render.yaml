@@ -8,9 +8,8 @@ services:
     runtime: node
     plan: free
     rootDir: backend
-    # `--include=dev` because NODE_ENV=production would otherwise skip devDependencies (TypeScript) at build time.
-    # Once package-lock.json is committed you can switch `npm install` to `npm ci`.
-    buildCommand: npm install --include=dev && npm run build
+    # Install the locked compiler version; Render may otherwise resolve a newer incompatible TypeScript.
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
