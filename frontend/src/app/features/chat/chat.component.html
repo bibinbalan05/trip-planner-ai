@@ -1,0 +1,108 @@
+<section class="chat" aria-label="Trip planning chat">
+  <div class="chat__toolbar">
+    <p class="chat__toolbar-text">Ask anything about your next trip</p>
+    <button
+      type="button"
+      class="btn btn--secondary"
+      (click)="newChat()"
+      [disabled]="messages().length === 0 && !loading() && !errorMessage()"
+    >
+      New chat
+    </button>
+  </div>
+
+  <div
+    #messageList
+    class="chat__messages"
+    role="log"
+    aria-live="polite"
+    aria-relevant="additions"
+    aria-label="Conversation"
+    tabindex="0"
+  >
+    <article class="message message--model">
+      <span class="visually-hidden">Assistant:</span>
+      <div class="message__bubble">
+        <p>
+          <strong>Hi! I'm your AI travel assistant.</strong> I can help you with:
+        </p>
+        <ul>
+          <li>Destination ideas</li>
+          <li>Day-by-day itineraries</li>
+          <li>Attractions and activities</li>
+          <li>Food and restaurant suggestions</li>
+          <li>Budget-friendly travel tips</li>
+        </ul>
+        <p>
+          Tell me where you'd like to go, for how long and what you enjoy, or try one of the ideas below. I don't have
+          live data, so please double-check prices, opening hours and entry rules before you book.
+        </p>
+      </div>
+    </article>
+
+    @if (messages().length === 0) {
+      <div class="suggestions" role="group" aria-label="Suggested prompts">
+        @for (prompt of suggestedPrompts; track prompt) {
+          <button type="button" class="suggestion" (click)="useSuggestion(prompt)" [disabled]="loading()">
+            {{ prompt }}
+          </button>
+        }
+      </div>
+    }
+
+    @for (message of messages(); track message.id) {
+      <article class="message" [class.message--user]="message.role === 'user'" [class.message--model]="message.role === 'model'">
+        <span class="visually-hidden">{{ message.role === 'user' ? 'You:' : 'Assistant:' }}</span>
+        @if (message.role === 'user') {
+          <div class="message__bubble message__bubble--plain">{{ message.text }}</div>
+        } @else {
+          <div class="message__bubble" [innerHTML]="message.text | formatMessage"></div>
+        }
+      </article>
+    }
+
+    @if (loading()) {
+      <div class="message message--model" role="status">
+        <span class="visually-hidden">The assistant is typing…</span>
+        <div class="message__bubble typing" aria-hidden="true">
+          <span class="typing__dot"></span>
+          <span class="typing__dot"></span>
+          <span class="typing__dot"></span>
+        </div>
+      </div>
+    }
+
+    @if (errorMessage(); as error) {
+      <div class="error" role="alert">
+        <p class="error__text">{{ error }}</p>
+        @if (!loading()) {
+          <button type="button" class="btn btn--danger" (click)="retry()">Try again</button>
+        }
+      </div>
+    }
+  </div>
+
+  <form class="composer" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="visually-hidden" for="message-input">Message to the travel assistant</label>
+    <textarea
+      #messageInput
+      id="message-input"
+      class="composer__input"
+      formControlName="message"
+      rows="2"
+      [attr.maxlength]="maxMessageLength"
+      placeholder="Where would you like to go?"
+      aria-describedby="composer-hint"
+      (keydown)="onKeydown($event)"
+    ></textarea>
+    <button type="submit" class="btn btn--primary composer__send" [disabled]="!canSend()">Send</button>
+    <p id="composer-hint" class="composer__hint">
+      Enter to send, Shift+Enter for a new line.
+      @if (remainingCharacters() < 200) {
+        <span [class.composer__hint--warn]="remainingCharacters() < 50">
+          {{ remainingCharacters() }} characters left.
+        </span>
+      }
+    </p>
+  </form>
+</section>

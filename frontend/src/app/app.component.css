@@ -1,0 +1,63 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.app-header {
+  flex: none;
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  color: #fff;
+  padding: 0.85rem 1rem;
+}
+
+.app-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 54rem;
+  margin: 0 auto;
+}
+
+.app-header__logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 1.35rem;
+}
+
+.app-header__title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.app-header__subtitle {
+  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  opacity: 0.92;
+}
+
+.app-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    padding: 0.6rem 0.85rem;
+  }
+
+  /* Save vertical space on phones: the title is enough. */
+  .app-header__subtitle {
+    display: none;
+  }
+}
