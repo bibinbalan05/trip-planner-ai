@@ -2,5 +2,5 @@
 // (see scripts/set-api-url.mjs). Contains no secrets.
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://trip-planner-api.onrender.com',
+  apiBaseUrl: 'https://trip-planner-api-lhfm.onrender.com',
 };
